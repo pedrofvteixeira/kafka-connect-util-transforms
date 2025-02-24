@@ -7,40 +7,37 @@ import static org.apache.kafka.common.config.ConfigDef.Type.STRING;
 import java.util.Map;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.connect.errors.ConnectException;
+import org.apache.kafka.connect.errors.DataException;
 
 public class ToCustomStringConfig extends AbstractConfig {
-
-  public static final String EMPTY = "";
 
   public static final String PARAM_PREFIX = "prefix";
   public static final String PARAM_DELIMITER = "delimiter";
   public static final String PARAM_COMMA_SEPARATED_FIELDS = "fields";
 
-  private final String prefix;
-  private final String delimiter;
-  private final String[] fields;
+  // https://docs.confluent.io/platform/current/connect/devguide.html#configuration-validation
+  public static final ConfigDef CONFIG_DEF = new ConfigDef();
 
-  public static ConfigDef buildConfig() {
-    ConfigDef config = new ConfigDef();
-    config.define(PARAM_PREFIX, STRING, EMPTY, LOW, "Prefix added to the resulting string");
-    config.define(PARAM_DELIMITER, STRING, EMPTY, LOW, "Delimiter between various values within the string");
-    config.define(PARAM_COMMA_SEPARATED_FIELDS, STRING, EMPTY, HIGH, "Comma-separated string of fields that make up the string");
-    return config;
+  static {
+    CONFIG_DEF.define(PARAM_COMMA_SEPARATED_FIELDS, STRING, "", HIGH, "comma-separated list of fields used to compose the custom string");
+    CONFIG_DEF.define(PARAM_PREFIX, STRING, "", LOW, "A value to prepend to the custom string");
+    CONFIG_DEF.define(PARAM_DELIMITER, STRING, "", LOW, "A delimiter between prefix and each of the fields in the list");
   }
 
+  private String prefix;
+  private String delimiter;
+  private String commaSeparatedFields;
+
   public ToCustomStringConfig(Map<String, ?> settings) {
-    super(buildConfig(), settings);
+    super(CONFIG_DEF, settings);
 
     prefix = getString(PARAM_PREFIX);
     delimiter = getString(PARAM_DELIMITER);
-    String fieldsStr = getString(PARAM_COMMA_SEPARATED_FIELDS);
+    commaSeparatedFields = getString(PARAM_COMMA_SEPARATED_FIELDS);
 
-    if (fieldsStr == null || fieldsStr.isEmpty()) {
-      throw new ConnectException("Missing required configuration: comma-separated string of fields must be provided in 'fields'");
+    if (commaSeparatedFields == null || commaSeparatedFields.isEmpty()) {
+      throw new DataException("Missing required 'fields'");
     }
-
-    fields = fieldsStr.split("\\s*,\\s*"); // Split comma-separated list of fields + trim any whitespace
   }
 
   public String getPrefix() {
@@ -51,7 +48,7 @@ public class ToCustomStringConfig extends AbstractConfig {
     return delimiter;
   }
 
-  public String[] getFields() {
-    return fields;
+  public String getCommaSeparatedFields() {
+    return commaSeparatedFields;
   }
 }

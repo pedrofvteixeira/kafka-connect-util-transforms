@@ -1,7 +1,10 @@
-plugins { id "java" }
+plugins {
+    id "java"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
 
 group = "org.pteixeira.kafka.connect.transforms"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 description = "A collection of util SMTs for Kafka Connect"
 
 java {
@@ -23,4 +26,20 @@ dependencies {
 
 test {
     useJUnitPlatform() // use JUnit5
+}
+
+// https://docs.confluent.io/cloud/current/connectors/bring-your-connector/custom-connector-qs.html
+// kafka-connect plugins must comply with the following:
+// - a zip named <owner>-<plugin-name>-<version>
+// - must have a manifest.json in the root dir
+// - must contain the following 4 dirs: assets, doc, etc, lib
+// - all jars needed to run the plugin must be within lib folder
+task dist(type: Zip) {
+    dependsOn "build", "shadowJar"
+
+    archiveFileName = "pteixeira-kafka-connect-util-transforms-${version}.zip"
+    destinationDirectory = file("${buildDir}/distributions")
+
+    from("${buildDir}/libs") { include '*-all.jar' into 'lib' }
+    into('') { from("${buildDir}/resources/main/") }
 }

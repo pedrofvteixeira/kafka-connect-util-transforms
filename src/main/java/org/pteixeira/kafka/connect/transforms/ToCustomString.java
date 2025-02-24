@@ -1,44 +1,102 @@
 package org.pteixeira.kafka.connect.transforms;
 
 import static java.util.Optional.ofNullable;
+import static org.apache.kafka.connect.data.Schema.STRING_SCHEMA;
 
 import java.util.Arrays;
+import java.util.Map;
+import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.connect.connector.ConnectRecord;
 import org.apache.kafka.connect.data.Struct;
-import org.apache.kafka.connect.errors.ConnectException;
+import org.apache.kafka.connect.transforms.Transformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ToCustomString {
+public abstract class ToCustomString<R extends ConnectRecord<R>> implements Transformation<R> {
 
-  private final String prefix;
-  private final String delimiter;
-  private final String[] fields;
+  static final Logger log = LoggerFactory.getLogger(ToCustomString.class);
 
-  public ToCustomString(final String prefix, final String delimiter, final String[] fields) {
-    this.prefix = prefix;
-    this.delimiter = delimiter;
-    this.fields = fields;
+  private ToCustomStringConfig config;
 
-    if (this.prefix == null) {
-      throw new ConnectException("Missing required configuration: prefix");
+  public ToCustomString() {} // Plugin class must have a no-args constructor, and cannot be a non-static inner class
+
+  R applyInKey(R r /* record */) {
+    if (r == null || r.key() == null) {
+      log.warn("ToCustomString: key is null, no custom string possible");
+      return r;
     }
-    if (this.delimiter == null) {
-      throw new ConnectException("Missing required configuration: delimiter");
-    }
-    if (this.fields == null || this.fields.length == 0) {
-      throw new ConnectException("Missing required configuration: fields");
-    }
+
+    String key = process((Struct) r.key());
+    log.debug("ToCustomString: new key is {}", key);
+    return r.newRecord(r.topic(), r.kafkaPartition(), STRING_SCHEMA, key, r.valueSchema(), r.value(), r.timestamp());
   }
 
-  String process(final Struct struct) {
-    final StringBuilder sb = new StringBuilder(prefix).append(delimiter);
+  R applyInValue(R r /* record */) {
+    if (r == null || r.value() == null) {
+      log.warn("ToCustomString: value is null, no custom string possible");
+      return r;
+    }
+
+    String value = process((Struct) r.value());
+    log.debug("ToCustomString: new value is {}", value);
+    return r.newRecord(r.topic(), r.kafkaPartition(), r.keySchema(), r.key(), STRING_SCHEMA, value, r.timestamp());
+  }
+
+  @Override
+  public void configure(Map<String, ?> configs) {
+    config = new ToCustomStringConfig(configs); // parse provided values for custom parameters
+  }
+
+  @Override
+  public ConfigDef config() {
+    return ToCustomStringConfig.CONFIG_DEF; // lets kafka-connect be aware this transformation accepts custom parameters
+  }
+
+  @Override
+  public void close() {
+  }
+
+  private String process(final Struct struct) {
+    final String[] fields = safeSplit(config.getCommaSeparatedFields());
+    final StringBuilder sb = new StringBuilder();
+
+    if (isNotEmpty(config.getPrefix())) {
+      sb.append(config.getPrefix()).append(config.getDelimiter());
+    }
 
     // Concatenate each specified field using the delimiter
     Arrays.stream(fields)
-      .forEach(field -> ofNullable(struct.get(field))
-      .ifPresent(val -> sb.append(val.toString().trim()).append(delimiter)));
+        .filter(this::isNotEmpty)
+        .forEach(field -> ofNullable(struct.get(field))
+        .ifPresent(val -> sb.append(val.toString().trim()).append(config.getDelimiter())));
 
     String customString = sb.toString();
-    return customString.endsWith(delimiter)
-      ? customString.substring(0, customString.lastIndexOf(delimiter))
+    return customString.endsWith(config.getDelimiter())
+      ? customString.substring(0, customString.lastIndexOf(config.getDelimiter()))
       : customString;
+  }
+
+  private String[] safeSplit(String commaSeparatedString) {
+    return commaSeparatedString == null ? new String[]{} : commaSeparatedString.split("\\s*,\\s*");
+  }
+
+  private boolean isNotEmpty(String s) {
+    return s != null && !s.isEmpty();
+  }
+
+  public static final class Key<R extends ConnectRecord<R>> extends ToCustomString<R> {
+
+    @Override
+    public R apply(R record) {
+      return applyInKey(record);
+    }
+  }
+
+  public static final class Value<R extends ConnectRecord<R>> extends ToCustomString<R> {
+
+    @Override
+    public R apply(R record) {
+      return applyInValue(record);
+    }
   }
 }
