@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<project
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ord.pedrofvteixeira.kafka.connect.transformations</groupId>
+    <artifactId>kafka-connect-util-transforms</artifactId>
+    <version>0.0.1</version>
+    <name>kafka-connect-util-transforms</name>
+    <url>https://github.com/pedrofvteixeira/kafka-connect-util-transforms</url>
+    <description>kafka-connect bundle of utilitarian transformations</description>
+
+    <properties>
+        <!-- kafka-connect PluginHandler only discovers plugins compiled with JDK 8 -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <junit.version>5.9.1</junit.version>
+        <slf4j-api.version>2.0.16</slf4j-api.version>
+        <kafka-connect-api.version>3.9.0</kafka-connect-api.version>
+        <confluent.hub.packaging.version>0.12.0</confluent.hub.packaging.version>
+        <jcustenborder.kafka-connect-utils.version>0.7.177</jcustenborder.kafka-connect-utils.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>connect-api</artifactId>
+            <version>${kafka-connect-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jcustenborder.kafka.connect</groupId>
+            <artifactId>connect-utils</artifactId>
+            <version>${jcustenborder.kafka-connect-utils.version}</version>
+        </dependency>
+
+        <!-- tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.confluent</groupId>
+                    <artifactId>kafka-connect-maven-plugin</artifactId>
+                    <version>${confluent.hub.packaging.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <id>hub</id>
+                            <goals>
+                                <goal>kafka-connect</goal>
+                            </goals>
+                            <configuration>
+                                <ownerName>Pedro Teixeira</ownerName>
+                                <ownerUsername>pedrofvteixeira</ownerUsername>
+                                <confluentControlCenterIntegration>false</confluentControlCenterIntegration>
+                                <excludes>
+                                    <exclude>com.google.guava:guava</exclude>
+                                    <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
+                                </excludes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-connect-maven-plugin</artifactId>
+                <configuration>
+                    <confluentControlCenterIntegration>false</confluentControlCenterIntegration>
+                    <title>Kafka Connect Utillitarian Transformations</title>
+                    <componentTypes>
+                        <componentType>transform</componentType>
+                    </componentTypes>
+                    <tags>
+                        <tag>Transformation</tag>
+                    </tags>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
