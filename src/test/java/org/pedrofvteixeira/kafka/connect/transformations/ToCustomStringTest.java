@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.pedrofvteixeira.kafka.connect.transformations.ToCustomStringConfig.PARAM_COMMA_SEPARATED_FIELDS;
+import static org.pedrofvteixeira.kafka.connect.transformations.ToCustomStringConfig.PARAM_DELIMITER;
+import static org.pedrofvteixeira.kafka.connect.transformations.ToCustomStringConfig.PARAM_PREFIX;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +20,8 @@ import org.apache.kafka.connect.data.SchemaBuilder;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.errors.DataException;
 import org.apache.kafka.connect.sink.SinkRecord;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,26 +29,19 @@ public class ToCustomStringTest {
 
   static final Logger log = LoggerFactory.getLogger(ToCustomStringTest.class);
 
-  private ToCustomString.Key<SinkRecord> customStringKey;
-  private ToCustomString.Value<SinkRecord> customStringValue;
-
-  @BeforeEach
-  public void beforeEach() {
-    customStringKey = new ToCustomString.Key<>();
-    customStringValue = new ToCustomString.Value<>();
-  }
+  private final ToCustomString.Key<SinkRecord> customStringKey = new ToCustomString.Key<>();
+  private final ToCustomString.Value<SinkRecord> customStringValue = new ToCustomString.Value<>();
 
   @Test
   public void shouldFailWhenFieldsAreNotProvidedInKey() {
     log.info("When the SMT is invoked without providing a comma-separated list of fields");
-    Map<String, String> configA = new HashMap<>();
-    configA.put(ToCustomStringConfig.PARAM_PREFIX, "test");
-    configA.put(ToCustomStringConfig.PARAM_DELIMITER, "test");
+    var configA = Map.of(PARAM_PREFIX, "test", PARAM_DELIMITER, "test");
 
-    Map<String, String> configB = new HashMap<>();
-    configB.put(ToCustomStringConfig.PARAM_PREFIX, "test");
-    configB.put(ToCustomStringConfig.PARAM_DELIMITER, "#");
-    configB.put(ToCustomStringConfig.PARAM_COMMA_SEPARATED_FIELDS, "");
+    var configB = Map.of(
+      PARAM_PREFIX, "test",
+      PARAM_DELIMITER, "#",
+      PARAM_COMMA_SEPARATED_FIELDS, ""
+    );
 
     log.info("Then the SMT throws an exception");
     assertThrows(DataException.class, () -> customStringKey.configure(configA));
@@ -55,14 +51,10 @@ public class ToCustomStringTest {
   @Test
   public void shouldFailWhenFieldsAreNotProvidedInValue() {
     log.info("When the SMT is invoked without providing a comma-separated list of fields");
-    Map<String, String> configA = new HashMap<>();
-    configA.put(ToCustomStringConfig.PARAM_PREFIX, "test");
-    configA.put(ToCustomStringConfig.PARAM_DELIMITER, "#");
+    var configA = Map.of(PARAM_PREFIX, "test", PARAM_DELIMITER, "#"
+    );
 
-    Map<String, String> configB = new HashMap<>();
-    configB.put(ToCustomStringConfig.PARAM_PREFIX, "test");
-    configB.put(ToCustomStringConfig.PARAM_DELIMITER, "#");
-    configB.put(ToCustomStringConfig.PARAM_COMMA_SEPARATED_FIELDS, "");
+    var configB = Map.of(PARAM_PREFIX, "test", PARAM_DELIMITER, "#", PARAM_COMMA_SEPARATED_FIELDS, "");
 
     log.info("Then the SMT throws an exception");
     assertThrows(DataException.class, () -> customStringValue.configure(configA));
@@ -72,14 +64,15 @@ public class ToCustomStringTest {
   @Test
   public void shouldTransformKeyIntoCustomString() {
     log.info("when the SMT is invoked without providing a comma-separated list of fields");
-    Map<String, String> config = new HashMap<>();
-    config.put(ToCustomStringConfig.PARAM_PREFIX, "test-prefix");
-    config.put(ToCustomStringConfig.PARAM_DELIMITER, "#");
-    config.put(ToCustomStringConfig.PARAM_COMMA_SEPARATED_FIELDS, "first_name,last_name");
+    var config = Map.of(
+      PARAM_PREFIX, "test-prefix",
+      PARAM_DELIMITER, "#",
+      PARAM_COMMA_SEPARATED_FIELDS, "first_name,last_name"
+    );
 
-    final String firstName = "lIf8aJvbtS";
-    final String lastName = "SJg2NMdwdu";
-    final String expected = String.format("test-prefix#%s#%s", firstName, lastName);
+    var firstName = "lIf8aJvbtS";
+    var lastName = "SJg2NMdwdu";
+    var expected = String.format("test-prefix#%s#%s", firstName, lastName);
 
     log.info("then the SMT transforms the key into the intended custom string");
     assertDoesNotThrow(() -> customStringKey.configure(config));
@@ -92,15 +85,16 @@ public class ToCustomStringTest {
   @Test
   public void shouldTransformValueIntoCustomString() {
     log.info("when the SMT is invoked without providing a comma-separated list of fields");
-    Map<String, String> config = new HashMap<>();
-    config.put(ToCustomStringConfig.PARAM_PREFIX, "test-prefix");
-    config.put(ToCustomStringConfig.PARAM_DELIMITER, "#");
-    config.put(ToCustomStringConfig.PARAM_COMMA_SEPARATED_FIELDS, "nationality,citizenship,enabled");
+    var config = Map.of(
+      PARAM_PREFIX, "test-prefix",
+      PARAM_DELIMITER, "#",
+      PARAM_COMMA_SEPARATED_FIELDS, "nationality,citizenship,enabled"
+    );
 
-    final String nationality = "lIf8aJvbtS";
-    final String citizenship = "SJg2NMdwdu";
-    final boolean enabled = new Random().nextBoolean();
-    final String expected = String.format("test-prefix#%s#%s#%s", nationality, citizenship, enabled);
+    var nationality = "lIf8aJvbtS";
+    var citizenship = "SJg2NMdwdu";
+    var enabled = new Random().nextBoolean();
+    var expected = String.format("test-prefix#%s#%s#%s", nationality, citizenship, enabled);
 
     log.info("then the SMT transforms the key into the intended custom string");
     assertDoesNotThrow(() -> customStringValue.configure(config));
@@ -113,12 +107,11 @@ public class ToCustomStringTest {
   @Test
   public void shouldTransformKeyIntoCustomStringWithDefaultParameters() {
     log.info("when the SMT is invoked without providing a comma-separated list of fields");
-    Map<String, String> config = new HashMap<>();
-    config.put(ToCustomStringConfig.PARAM_COMMA_SEPARATED_FIELDS, "first_name,last_name");
+    var config = Map.of(PARAM_COMMA_SEPARATED_FIELDS, "first_name,last_name");
 
-    final String firstName = "1KzB0bXRy1";
-    final String lastName = "G0FCU2kAHf";
-    final String expected = String.format("%s%s%s%s%s", "", "", firstName, "", lastName);
+    var firstName = "1KzB0bXRy1";
+    var lastName = "G0FCU2kAHf";
+    var expected = String.format("%s%s%s%s%s", "", "", firstName, "", lastName);
 
     log.info("then the SMT transforms the key into the intended custom string");
     assertDoesNotThrow(() -> customStringKey.configure(config));
@@ -131,13 +124,12 @@ public class ToCustomStringTest {
   @Test
   public void shouldTransformValueIntoCustomStringWithDefaultParameters() {
     log.info("when the SMT is invoked without providing a comma-separated list of fields");
-    Map<String, String> config = new HashMap<>();
-    config.put(ToCustomStringConfig.PARAM_COMMA_SEPARATED_FIELDS, "nationality,citizenship,enabled");
+    var config = Map.of(PARAM_COMMA_SEPARATED_FIELDS, "nationality,citizenship,enabled");
 
-    final String nationality = "1KzB0bXRy1";
-    final String citizenship = "G0FCU2kAHf";
-    final boolean enabled = new Random().nextBoolean();
-    final String expected = String.format("%s%s%s%s%s%s%s", "", "", nationality, "", citizenship, "", enabled);
+    var nationality = "1KzB0bXRy1";
+    var citizenship = "G0FCU2kAHf";
+    var enabled = new Random().nextBoolean();
+    var expected = String.format("%s%s%s%s%s%s%s", "", "", nationality, "", citizenship, "", enabled);
 
     log.info("then the SMT transforms the key into the intended custom string");
     assertDoesNotThrow(() -> customStringValue.configure(config));

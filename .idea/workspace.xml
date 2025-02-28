@@ -5,44 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bd2f0b67-0abe-4085-a20d-9779cb565920" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/checksums/checksums.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/checksums/md5-checksums.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/checksums/sha1-checksums.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/executionHistory/executionHistory.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/executionHistory/executionHistory.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/fileChanges/last-build.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/fileHashes/fileHashes.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/fileHashes/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/fileHashes/resourceHashesCache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.12.1/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/vcs-1/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kafka-connect-util-transforms.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/pteixeira/kafka/connect/transforms/ToCustomString.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/pteixeira/kafka/connect/transforms/ToCustomStringConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/pteixeira/kafka/connect/transforms/ToString.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/pteixeira/kafka/connect/transforms/ToStringConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/README" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/doc/README" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/etc/README" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/manifest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/pteixeira/kafka/connect/transforms/ToCustomStringTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/pteixeira/kafka/connect/transforms/ToStringKeyTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/pedrofvteixeira/kafka/connect/transformations/ToCustomStringTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/pedrofvteixeira/kafka/connect/transformations/ToCustomStringTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/pedrofvteixeira/kafka/connect/transformations/ToStringTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/pedrofvteixeira/kafka/connect/transformations/ToStringTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +69,7 @@
     "ignore.preview.features.used": "true",
     "jdk.selected.JAVA_MODULE": "21",
     "last_opened_file_path": "/Users/pedro.teixeira/Git/kafka-connect-util-transforms",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.41241685"
   }

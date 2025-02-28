@@ -14,8 +14,7 @@ import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaBuilder;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.sink.SinkRecord;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +22,8 @@ public class ToStringTest {
 
   static final Logger log = LoggerFactory.getLogger(ToStringTest.class);
 
-  private ToString.Key<SinkRecord> stringKey;
-  private ToString.Value<SinkRecord> stringValue;
-
-  @BeforeEach
-  public void beforeEach() {
-    stringKey = new ToString.Key<>();
-    stringValue = new ToString.Value<>();
-  }
+  private ToString.Key<SinkRecord> stringKey = new ToString.Key<>();
+  private ToString.Value<SinkRecord> stringValue = new ToString.Value<>();
 
   @Test
   public void shouldTransformKeyIntoString() {
